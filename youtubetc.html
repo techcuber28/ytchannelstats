@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b12">
+  <title>TechcuberGD — Live Stats</title>
+
+  <style>
+    :root {
+      --bg: #090b12;
+      --card: #111522;
+      --border: #242a3c;
+      --text: #f1f3fa;
+      --muted: #858da4;
+      --blue: #7098ff;
+      --purple: #aa83ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% -15%, #29345e55, transparent 55%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 36px));
+      margin: auto;
+    }
+
+    header {
+      padding: 64px 0 42px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 11px;
+      border: 1px solid #343653;
+      border-radius: 20px;
+      background: #17192a;
+      color: #b5a3ff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 20px 0 10px;
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 800;
+      letter-spacing: -2px;
+    }
+
+    h1 span {
+      background: linear-gradient(100deg, var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .channel-card {
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 24px;
+      overflow: hidden;
+      border: 1px solid #343653;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #171c30, #111421);
+      box-shadow: 0 15px 55px #0003;
+    }
+
+    .channel-card h2 {
+      margin: 0 0 5px;
+      font-size: 16px;
+    }
+
+    .channel-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .subscriber-counter {
+      display: block;
+      width: 100%;
+      height: 80px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 10px;
+      background: white;
+    }
+
+    .section {
+      padding-bottom: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      flex-shrink: 0;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      background: var(--card);
+      font-size: 19px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: -.5px;
+    }
+
+    .section-header p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: linear-gradient(145deg, #141827, #0f121d);
+      transition: border-color .2s, transform .2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      border-color: #59639a;
+    }
+
+    .stat-card iframe {
+      display: block;
+      width: 100%;
+      height: 80px;
+      border: 0;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .video-link {
+      display: block;
+      margin-top: 12px;
+      overflow: hidden;
+      color: #a8b5d4;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color .2s;
+    }
+
+    .video-link:hover {
+      color: var(--blue);
+    }
+
+    footer {
+      padding: 24px 0 32px;
+      border-top: 1px solid var(--border);
+      color: #656e84;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    footer a {
+      color: #a5b4fc;
+      text-decoration: none;
+    }
+
+    @media (max-width: 750px) {
+      header {
+        padding-top: 44px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 440px) {
+      .container {
+        width: calc(100% - 24px);
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card iframe {
+        height: 80px;
+      }
+
+      h1 {
+        letter-spacing: -1.5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="container">
+    <div class="eyebrow">Channel dashboard</div>
+    <h1>Techcuber<span>GD</span></h1>
+    <p class="subtitle">Live channel statistics</p>
+  </header>
+
+  <main class="container">
+    <section class="channel-card" style="margin-bottom: 48px">
+      <h2>Channel subscribers</h2>
+      <p>Live subscriber count</p>
+
+      <iframe
+        class="subscriber-counter"
+        title="Live subscriber count"
+        src="https://livecounts.io/embed/youtube-live-subscriber-counter/UCusI9HgrHJ2UKTHgYkKLQFQ"
+        loading="lazy">
+      </iframe>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">🎬</div>
+        <div>
+          <h2>Long-form</h2>
+          <p>Video view counts</p>
+        </div>
+      </div>
+
+      <div class="grid" id="longGrid"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div class="section-icon">⚡</div>
+        <div>
+          <h2>Shorts</h2>
+          <p>Short-form video view counts</p>
+        </div>
+      </div>
+
+      <div class="grid" id="shortGrid"></div>
+    </section>
+  </main>
+
+  <footer class="container">
+    Stats powered by Livecounts.io ·
+    <a href="https://www.youtube.com/@TechcuberGD"
+       target="_blank" rel="noopener noreferrer">Visit YouTube channel ↗</a>
+  </footer>
+
+  <script>
+    const longVideos = [
+      "5ZANGbX812Q",
+      "w1pCuiQ_PeY",
+      "pZgERSnwKH4",
+      "NE_XcESPnFw",
+      "yj_o3VdpOTA",
+      "cfyZ5dhw0wc"
+    ];
+
+    const shortVideos = [
+      "kUsArZseTO0",
+      "tFfeA-P_qJg",
+      "--FPUFnLuw0",
+      "dtafCnAy7_c",
+      "Mxkv5eBhYJk",
+      "16ZacA1atqU",
+      "dbPCMl9z8vk",
+      "DEzJSiVN_fk",
+      "zlDVUzu7TUA",
+      "dnOVSAg8ack",
+      "qj8NzGqYCH0",
+      "5LetvQyQFJk",
+      "xsFd1DcsTdk",
+      "mH3Gqp2VkeM",
+      "eScb0wLgdFU",
+      "kt2gqShmtwI",
+      "mXZ2_Y9Z9X8",
+      "PEt83ZS4iQg",
+      "4Jo1Ux-yMr0",
+      "Bkcxxu5qXoc",
+      "j_5REbqPAw4",
+      "mQ9HIJM0wnk",
+      "Ex4hZ69QqI0",
+      "gAMzTb3aFcY",
+      "HpdDWJx8G4w",
+      "ylsvIlo42T4",
+      "1AV00siDj3E",
+      "lKoxj-jnrwI",
+      "tAkn7glCnzM",
+      "gaOWsn33wag",
+      "XIS4HA4hfmg",
+      "chY_74IJPIk",
+      "9cjsjn8LG2A",
+      "Bi1tCMtHYGQ",
+      "_AdT9lyWYHM",
+      "x_dEhH6CdNY",
+      "gicaOWkTmvI",
+      "BXYjYi_iydI",
+      "1JSDgaF5mJ0",
+      "vBfTcALXNdc",
+      "LKvrOgelnos",
+      "H4cq9gQscjk",
+      "drorz5_tWvY",
+      "m_mtna49h-s",
+      "JnE12GpV3UE",
+      "utd6XSJY5WU",
+      "3JwlvQod_X0",
+      "5U4QiLeYi7A",
+      "lLFDHMCu_94",
+      "BlIF4JkNXn0",
+      "kwWekvrPKLo",
+      "S8OPvpOH2ZU",
+      "EIHVYrLBpQ8"
+    ];
+
+    function renderVideos(ids, containerId, label) {
+      const grid = document.getElementById(containerId);
+
+      ids.forEach((id, index) => {
+        const card = document.createElement("article");
+        card.className = "stat-card";
+
+        const counter = document.createElement("iframe");
+        counter.loading = "lazy";
+        counter.title = `${label} ${index + 1} view count`;
+        counter.src =
+          `https://livecounts.io/embed/youtube-live-view-counter/${encodeURIComponent(id)}`;
+
+        const link = document.createElement("a");
+        link.className = "video-link";
+        link.href = `https://www.youtube.com/watch?v=${encodeURIComponent(id)}`;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = `${label} ${String(index + 1).padStart(2, "0")} ↗`;
+        link.title = `Open video ${id} on YouTube`;
+
+        card.append(counter, link);
+        grid.appendChild(card);
+      });
+    }
+
+    renderVideos(longVideos, "longGrid", "Video");
+    renderVideos(shortVideos, "shortGrid", "Short");
+  </script>
+</body>
+</html>
